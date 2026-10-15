@@ -6,7 +6,7 @@
     <title>고등학생 휴식 시설 지도</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome 아이콘 CDN -->
+    <!-- FontAwesome 아이콘 CDN (왼쪽 메뉴 버튼용) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* 스크롤바 디자인 커스텀 */
@@ -23,8 +23,8 @@
 
     <!-- 상단 헤더 -->
     <header class="bg-indigo-600 text-white p-4 shadow-md flex justify-between items-center z-10">
-        <h1 class="text-xl font-bold">🎒 고등학생 힐링 스팟 찾기</h1>
-        <p class="text-sm text-indigo-200">현재 위치 기반 주변 휴식 시설 검색</p>
+        <h1 class="text-xl font-bold">🎒 고등학생 힐링 스팟 & 응급 시설 찾기</h1>
+        <p class="text-sm text-indigo-200">현재 위치 기반 주변 시설 검색</p>
     </header>
 
     <!-- 메인 컨텐츠 영역 (2분할: 왼쪽 검색 및 리스트 / 오른쪽 지도) -->
@@ -38,7 +38,7 @@
                     <input 
                         type="text" 
                         id="searchInput" 
-                        placeholder="예: 강남 노래방, 역삼 PC방" 
+                        placeholder="예: 강남 노래방, 역삼 병원" 
                         class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                     >
                     <button 
@@ -49,19 +49,19 @@
                     </button>
                 </form>
 
-                <!-- 카테고리 버튼 필터 -->
+                <!-- 카테고리 버튼 필터 (노래방, 볼링장, 당구장, 병원) -->
                 <div class="grid grid-cols-2 gap-2 mt-3">
-                    <button type="button" data-category="노래방" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
+                    <button type="button" data-category="노래방" class="category-btn bg-gray-100 hover:bg-pink-50 hover:text-pink-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
                         <i class="fa-solid fa-microphone text-pink-600"></i> 노래방
                     </button>
-                    <button type="button" data-category="볼링장" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
+                    <button type="button" data-category="볼링장" class="category-btn bg-gray-100 hover:bg-amber-50 hover:text-amber-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
                         <i class="fa-solid fa-bowling-ball text-amber-600"></i> 볼링장
                     </button>
-                    <button type="button" data-category="당구장" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
+                    <button type="button" data-category="당구장" class="category-btn bg-gray-100 hover:bg-emerald-50 hover:text-emerald-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
                         <i class="fa-solid fa-circle text-emerald-600"></i> 당구장
                     </button>
-                    <button type="button" data-category="PC방" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-desktop text-blue-600"></i> PC방
+                    <button type="button" data-category="병원" class="category-btn bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-hospital text-red-600"></i> 병원
                     </button>
                 </div>
             </div>
@@ -202,46 +202,36 @@
             }
         }
 
-        // [수정됨] 핀 모양(동그란 머리 + 아래 삼각형 꼬리) 내부 아이콘 SVG 생성 함수
+        // 깔끔한 기본 핀 형태에 카테고리별 색상만 다르게 부여하는 SVG 핀 생성 함수
         function createMarkerImage(category) {
             let pinColor = '#db2777';   // 기본 핑크 (노래방)
-            // 각 카테고리별 아이콘의 SVG 경로(path) 데이터 정의
-            let iconPathSvg = '<path fill="#ffffff" d="M176 0c-35.3 0-64 28.7-64 64v112c0 35.3 28.7 64 64 64s64-28.7 64-64V64c0-35.3-28.7-64-64-64zM16 192c0-8.8 7.2-16 16-16s16 7.2 16 16c0 70.7 57.3 128 128 128s128-57.3 128-128c0-8.8 7.2-16 16-16s16 7.2 16 16c0 83.6-64 152.4-144 162.8V416h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16h32V354.8C96 344.4 32 275.6 32 192z"/>'; // 노래방(마이크)
 
             if (category.includes('노래방')) {
-                pinColor = '#db2777'; // 핑크
-                iconPathSvg = '<path fill="#ffffff" d="M176 0c-35.3 0-64 28.7-64 64v112c0 35.3 28.7 64 64 64s64-28.7 64-64V64c0-35.3-28.7-64-64-64zM16 192c0-8.8 7.2-16 16-16s16 7.2 16 16c0 70.7 57.3 128 128 128s128-57.3 128-128c0-8.8 7.2-16 16-16s16 7.2 16 16c0 83.6-64 152.4-144 162.8V416h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16h32V354.8C96 344.4 32 275.6 32 192z"/>';
+                pinColor = '#db2777'; // 핑크색
             } else if (category.includes('볼링장')) {
-                pinColor = '#d97706'; // 주황
-                iconPathSvg = '<path fill="#ffffff" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-96 64C57.3 320 0 377.3 0 448c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16c0-70.7-57.3-128-128-128H128zM304 96a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm-128 32a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm96 48a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/>';
+                pinColor = '#d97706'; // 주황색
             } else if (category.includes('당구장')) {
-                pinColor = '#059669'; // 초록
-                iconPathSvg = '<path fill="#ffffff" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>';
-            } else if (category.includes('PC방')) {
-                pinColor = '#2563eb'; // 파랑
-                iconPathSvg = '<path fill="#ffffff" d="M64 0C28.7 0 0 28.7 0 64V352c0 35.3 28.7 64 64 64H224v32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32H352c17.7 0 32-14.3 32-32s-14.3-32-32-32H288V416H448c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM64 64H448V352H64V64z"/>';
+                pinColor = '#059669'; // 초록색
+            } else if (category.includes('병원')) {
+                pinColor = '#dc2626'; // 빨간색
             }
 
-            // 정확한 지도 핀 모양(위쪽 동그라미 + 아래쪽 뾰족한 삼각형) 내부에 아이콘이 쏙 들어가도록 만든 SVG 구조
+            // 복잡한 마크 없이 선명하고 예쁜 표준 지도 핀 모양
             const svgString = `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="40" height="50">
-                    <!-- 지도 핀 외곽선 및 배경 (동그라미 + 아래로 향하는 삼각형 꼬리) -->
-                    <path fill="${pinColor}" stroke="#ffffff" stroke-width="20" d="M200 0C90 0 0 90 0 200c0 110 200 300 200 300s200-190 200-300C400 90 310 0 200 0z"/>
-                    <!-- 동그라미 중앙에 위치할 카테고리 아이콘 (크기와 위치 최적화) -->
-                    <g transform="translate(100, 70) scale(0.55)">
-                        ${iconPathSvg}
-                    </g>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300" width="36" height="45">
+                    <path fill="${pinColor}" stroke="#ffffff" stroke-width="12" d="M120 0C53.7 0 0 53.7 0 120c0 66.3 120 180 120 180s120-113.7 120-180C240 53.7 186.3 0 120 0z"/>
+                    <circle cx="120" cy="120" r="40" fill="#ffffff"/>
                 </svg>
             `;
 
             const imageSrc = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
-            const imageSize = new kakao.maps.Size(40, 50); // 마커 이미지 크기
-            const imageOption = { offset: new kakao.maps.Point(20, 50) }; // 핀의 맨 아랫점이 정확히 좌표를 가리키도록 설정
+            const imageSize = new kakao.maps.Size(36, 45); // 마커 이미지 크기
+            const imageOption = { offset: new kakao.maps.Point(18, 45) }; // 핀의 맨 아랫점이 정확히 위치 좌표를 가리키도록 설정
 
             return new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
         }
 
-        // 지도에 진짜 '마커(핀)'를 생성하고 표시하는 함수
+        // 지도에 마커를 생성하고 표시하는 함수
         function displayPlacesOnMap(places, category) {
             clearAllMarkers(); // 기존 마커 초기화
 
@@ -254,7 +244,7 @@
                 // 카테고리별 맞춤형 핀 이미지 생성
                 const markerImage = createMarkerImage(category);
 
-                // 카카오 기본 마커 객체 생성 (image 옵션 적용)
+                // 카카오 기본 마커 객체 생성
                 const marker = new kakao.maps.Marker({
                     map: mapInstance,
                     position: placeCoords,
