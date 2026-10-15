@@ -235,4 +235,57 @@
 
                 // 마커 클릭 시 인포윈도우 표시
                 const infowindow = new kakao.maps.InfoWindow({
-                    content: `<div style="padding:5
+                    content: `<div style="padding:5px;font-size:12px;font-weight:bold;">${placeItem.place_name}</div>`
+                });
+
+                kakao.maps.event.addListener(marker, 'click', function() {
+                    if (currentInfowindow) {
+                        currentInfowindow.close();
+                    }
+                    infowindow.open(mapInstance, marker);
+                    currentInfowindow = infowindow;
+                });
+            }
+
+            // 검색된 마커들이 모두 보이도록 지도 범위 재설정
+            mapInstance.setBounds(boundsRange);
+        }
+
+        // 모든 마커를 지도에서 제거하는 함수
+        function clearAllMarkers() {
+            for (let i = 0; i < markersList.length; i++) {
+                markersList[i].setMap(null);
+            }
+            markersList = [];
+        }
+
+        // 왼쪽 패널에 검색 결과 리스트를 렌더링하는 함수
+        function displayPlacesList(places) {
+            const listContainerNode = document.getElementById('placeListContainer');
+            listContainerNode.innerHTML = ''; // 기존 목록 초기화
+
+            for (let i = 0; i < places.length; i++) {
+                const placeItem = places[i];
+                
+                const listItemCard = document.createElement('div');
+                listItemCard.className = 'p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-300 transition cursor-pointer shadow-sm';
+                
+                listItemCard.innerHTML = `
+                    <h3 class="font-bold text-gray-800 text-sm mb-1">${placeItem.place_name}</h3>
+                    <p class="text-xs text-gray-500 mb-1">${placeItem.road_address_name || placeItem.address_name}</p>
+                    <p class="text-xs text-indigo-600 font-medium">${placeItem.phone || '전화번호 없음'}</p>
+                `;
+
+                // 리스트 아이템 클릭 시 해당 위치로 지도 중심 이동 및 확대
+                listItemCard.addEventListener('click', function() {
+                    const moveCoords = new kakao.maps.LatLng(placeItem.y, placeItem.x);
+                    mapInstance.setCenter(moveCoords);
+                    mapInstance.setLevel(3); // 클릭한 곳은 조금 더 확대해서 보여줌
+                });
+
+                listContainerNode.appendChild(listItemCard);
+            }
+        }
+    </script>
+</body>
+</html>
