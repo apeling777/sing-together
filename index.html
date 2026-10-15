@@ -47,15 +47,18 @@
                     </button>
                 </form>
 
-                <!-- 카테고리 버튼 필터 (노래방, 볼링/당구장, PC방) -->
-                <div class="flex gap-2 mt-3">
-                    <button type="button" data-category="노래방" class="category-btn flex-1 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 rounded-md text-xs font-medium transition border border-gray-200">
+                <!-- 카테고리 버튼 필터 (노래방, 볼링장, 당구장, PC방 4개로 분리) -->
+                <div class="grid grid-cols-2 gap-2 mt-3">
+                    <button type="button" data-category="노래방" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200">
                         🎤 노래방
                     </button>
-                    <button type="button" data-category="볼링장 당구장" class="category-btn flex-1 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 rounded-md text-xs font-medium transition border border-gray-200">
-                        🎳 볼링/당구
+                    <button type="button" data-category="볼링장" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200">
+                        🎳 볼링장
                     </button>
-                    <button type="button" data-category="PC방" class="category-btn flex-1 bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 rounded-md text-xs font-medium transition border border-gray-200">
+                    <button type="button" data-category="당구장" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200">
+                        🎱 당구장
+                    </button>
+                    <button type="button" data-category="PC방" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200">
                         💻 PC방
                     </button>
                 </div>
