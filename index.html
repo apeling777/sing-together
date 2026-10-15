@@ -202,38 +202,41 @@
             }
         }
 
-        // [핵심] 카테고리별 마커 이미지(핀) 생성 함수 (SVG를 활용해 핀 내부에 아이콘 삽입)
+        // [수정됨] 핀 모양(동그란 머리 + 아래 삼각형 꼬리) 내부 아이콘 SVG 생성 함수
         function createMarkerImage(category) {
-            let iconUnicode = '%uf130'; // 기본 마이크 (노래방)
-            let pinColor = '#db2777';   // 핑크색 (노래방)
+            let pinColor = '#db2777';   // 기본 핑크 (노래방)
+            // 각 카테고리별 아이콘의 SVG 경로(path) 데이터 정의
+            let iconPathSvg = '<path fill="#ffffff" d="M176 0c-35.3 0-64 28.7-64 64v112c0 35.3 28.7 64 64 64s64-28.7 64-64V64c0-35.3-28.7-64-64-64zM16 192c0-8.8 7.2-16 16-16s16 7.2 16 16c0 70.7 57.3 128 128 128s128-57.3 128-128c0-8.8 7.2-16 16-16s16 7.2 16 16c0 83.6-64 152.4-144 162.8V416h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16h32V354.8C96 344.4 32 275.6 32 192z"/>'; // 노래방(마이크)
 
             if (category.includes('노래방')) {
-                iconUnicode = '%uf130'; // 마이크 아이콘
-                pinColor = '#db2777';   // 핑크
+                pinColor = '#db2777'; // 핑크
+                iconPathSvg = '<path fill="#ffffff" d="M176 0c-35.3 0-64 28.7-64 64v112c0 35.3 28.7 64 64 64s64-28.7 64-64V64c0-35.3-28.7-64-64-64zM16 192c0-8.8 7.2-16 16-16s16 7.2 16 16c0 70.7 57.3 128 128 128s128-57.3 128-128c0-8.8 7.2-16 16-16s16 7.2 16 16c0 83.6-64 152.4-144 162.8V416h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16h32V354.8C96 344.4 32 275.6 32 192z"/>';
             } else if (category.includes('볼링장')) {
-                iconUnicode = '%uf472'; // 볼링공 아이콘
-                pinColor = '#d97706';   // 주황
+                pinColor = '#d97706'; // 주황
+                iconPathSvg = '<path fill="#ffffff" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-96 64C57.3 320 0 377.3 0 448c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16c0-70.7-57.3-128-128-128H128zM304 96a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm-128 32a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm96 48a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/>';
             } else if (category.includes('당구장')) {
-                iconUnicode = '%uf111'; // 원형(당구공) 아이콘
-                pinColor = '#059669';   // 초록
+                pinColor = '#059669'; // 초록
+                iconPathSvg = '<path fill="#ffffff" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/>';
             } else if (category.includes('PC방')) {
-                iconUnicode = '%uf108'; // 모니터(PC) 아이콘
-                pinColor = '#2563eb';   // 파랑
+                pinColor = '#2563eb'; // 파랑
+                iconPathSvg = '<path fill="#ffffff" d="M64 0C28.7 0 0 28.7 0 64V352c0 35.3 28.7 64 64 64H224v32H160c-17.7 0-32 14.3-32 32s14.3 32 32 32H352c17.7 0 32-14.3 32-32s-14.3-32-32-32H288V416H448c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM64 64H448V352H64V64z"/>';
             }
 
-            // SVG 코드를 데이터 URL(Data URI) 형태로 변환하여 핀 마커 이미지로 사용
+            // 정확한 지도 핀 모양(위쪽 동그라미 + 아래쪽 뾰족한 삼각형) 내부에 아이콘이 쏙 들어가도록 만든 SVG 구조
             const svgString = `
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="36" height="46">
-                    <!-- 핀 배경 방패 모양 -->
-                    <path fill="${pinColor}" d="M172.2 501.3C26.9 291 0 269.4 0 192 0 86 86 0 192 0s192 86 192 192c0 77.4-26.9 99-172.2 309.3-9.5 13.8-29.3 13.8-38.6 0z"/>
-                    <!-- 내부 아이콘 (FontAwesome 웹폰트 활용) -->
-                    <text x="50%" y="42%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="'Font Awesome 6 Free', 'FontAwesome'" font-weight="900" font-size="18">${decodeURIComponent(iconUnicode)}</text>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="40" height="50">
+                    <!-- 지도 핀 외곽선 및 배경 (동그라미 + 아래로 향하는 삼각형 꼬리) -->
+                    <path fill="${pinColor}" stroke="#ffffff" stroke-width="20" d="M200 0C90 0 0 90 0 200c0 110 200 300 200 300s200-190 200-300C400 90 310 0 200 0z"/>
+                    <!-- 동그라미 중앙에 위치할 카테고리 아이콘 (크기와 위치 최적화) -->
+                    <g transform="translate(100, 70) scale(0.55)">
+                        ${iconPathSvg}
+                    </g>
                 </svg>
             `;
 
             const imageSrc = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
-            const imageSize = new kakao.maps.Size(36, 46); // 마커 이미지 크기
-            const imageOption = { offset: new kakao.maps.Point(18, 46) }; // 핀의 뾰족한 부분이 좌표 딱 맞게 설정
+            const imageSize = new kakao.maps.Size(40, 50); // 마커 이미지 크기
+            const imageOption = { offset: new kakao.maps.Point(20, 50) }; // 핀의 맨 아랫점이 정확히 좌표를 가리키도록 설정
 
             return new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
         }
