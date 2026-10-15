@@ -6,7 +6,7 @@
     <title>고등학생 휴식 시설 지도</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome 아이콘 CDN (마커 및 버튼 아이콘용) -->
+    <!-- FontAwesome 아이콘 CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* 스크롤바 디자인 커스텀 */
@@ -52,16 +52,16 @@
                 <!-- 카테고리 버튼 필터 -->
                 <div class="grid grid-cols-2 gap-2 mt-3">
                     <button type="button" data-category="노래방" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-microphone text-indigo-500"></i> 노래방
+                        <i class="fa-solid fa-microphone text-pink-600"></i> 노래방
                     </button>
                     <button type="button" data-category="볼링장" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-bowling-ball text-indigo-500"></i> 볼링장
+                        <i class="fa-solid fa-bowling-ball text-amber-600"></i> 볼링장
                     </button>
                     <button type="button" data-category="당구장" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-circle text-indigo-500"></i> 당구장
+                        <i class="fa-solid fa-circle text-emerald-600"></i> 당구장
                     </button>
                     <button type="button" data-category="PC방" class="category-btn bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-700 py-1.5 px-2 rounded-md text-xs font-medium transition border border-gray-200 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-desktop text-indigo-500"></i> PC방
+                        <i class="fa-solid fa-desktop text-blue-600"></i> PC방
                     </button>
                 </div>
             </div>
@@ -91,16 +91,16 @@
         let placesService = null;       // 장소 검색 객체
         let markersList = [];           // 지도에 표시된 마커들을 담을 배열
         let currentInfowindow = null;   // 열려있는 인포윈도우 객체
-        let currentActiveCategory = ''; // 현재 선택된 카테고리 키워드
+        let currentActiveCategory = ''; // 현재 선택된 카테고리
 
-        // DOM이 완전히 로드된 후 실행
+        // DOM 로드 완료 후 실행
         document.addEventListener('DOMContentLoaded', function() {
             kakao.maps.load(function() {
                 initMap();
             });
         });
 
-        // 지도 초기화 및 현재 위치 가져오기 함수
+        // 지도 초기화 및 위치 권한 처리
         function initMap() {
             const mapContainerNode = document.getElementById('map');
             
@@ -134,10 +134,10 @@
             initEventListeners();
         }
 
-        // 현재 위치 마커 표시 함수
+        // 현재 위치 마커 표시
         function displayUserMarker(coords) {
             const markerContent = document.createElement('div');
-            markerContent.className = 'bg-blue-600 text-white text-xs px-2.5 py-1 rounded-full shadow-lg border-2 border-white font-bold flex items-center gap-1';
+            markerContent.className = 'bg-indigo-600 text-white text-xs px-2.5 py-1 rounded-full shadow-lg border-2 border-white font-bold flex items-center gap-1';
             markerContent.innerHTML = '<i class="fa-solid fa-location-dot"></i> 내 위치';
 
             const customOverlay = new kakao.maps.CustomOverlay({
@@ -148,7 +148,7 @@
             customOverlay.setMap(mapInstance);
         }
 
-        // 이벤트 리스너 등록 함수
+        // 이벤트 리스너 등록
         function initEventListeners() {
             const searchFormElement = document.getElementById('searchForm');
             searchFormElement.addEventListener('submit', function(event) {
@@ -160,7 +160,7 @@
                     alert('검색어를 입력해주세요!');
                     return;
                 }
-                currentActiveCategory = keywordValue; // 검색한 키워드를 현재 카테고리로 설정
+                currentActiveCategory = keywordValue;
                 searchPlacesByKeyword(keywordValue);
             });
 
@@ -169,13 +169,13 @@
                 button.addEventListener('click', function() {
                     const categoryQuery = this.getAttribute('data-category');
                     document.getElementById('searchInput').value = categoryQuery;
-                    currentActiveCategory = categoryQuery; // 클릭한 카테고리 저장
+                    currentActiveCategory = categoryQuery;
                     searchPlacesByKeyword(categoryQuery);
                 });
             });
         }
 
-        // 키워드 장소 검색 함수
+        // 키워드 장소 검색
         function searchPlacesByKeyword(keyword) {
             const currentCenterCoords = mapInstance.getCenter();
             const searchOptions = {
@@ -185,7 +185,7 @@
             placesService.keywordSearch(keyword, placesSearchCallback, searchOptions);
         }
 
-        // 장소 검색 결과 콜백 함수
+        // 검색 결과 콜백
         function placesSearchCallback(data, status, pagination) {
             if (status === kakao.maps.services.Status.OK) {
                 displayPlacesList(data);
@@ -202,36 +202,45 @@
             }
         }
 
-        // 카테고리별 맞춤 커스텀 마커 HTML 생성 함수 (HTML을 SVG / div 형태의 오버레이로 변환)
-        function createCustomMarker(category, placeName) {
-            let iconClass = 'fa-store';
-            let bgColor = 'bg-indigo-600';
+        // [핵심] 카테고리별 마커 이미지(핀) 생성 함수 (SVG를 활용해 핀 내부에 아이콘 삽입)
+        function createMarkerImage(category) {
+            let iconUnicode = '%uf130'; // 기본 마이크 (노래방)
+            let pinColor = '#db2777';   // 핑크색 (노래방)
 
-            // 검색어나 카테고리에 따른 아이콘 및 색상 매칭
             if (category.includes('노래방')) {
-                iconClass = 'fa-microphone';
-                bgColor = 'bg-pink-600';
+                iconUnicode = '%uf130'; // 마이크 아이콘
+                pinColor = '#db2777';   // 핑크
             } else if (category.includes('볼링장')) {
-                iconClass = 'fa-bowling-ball';
-                bgColor = 'bg-amber-600';
+                iconUnicode = '%uf472'; // 볼링공 아이콘
+                pinColor = '#d97706';   // 주황
             } else if (category.includes('당구장')) {
-                iconClass = 'fa-circle-dot';
-                bgColor = 'bg-emerald-600';
+                iconUnicode = '%uf111'; // 원형(당구공) 아이콘
+                pinColor = '#059669';   // 초록
             } else if (category.includes('PC방')) {
-                iconClass = 'fa-desktop';
-                bgColor = 'bg-blue-600';
+                iconUnicode = '%uf108'; // 모니터(PC) 아이콘
+                pinColor = '#2563eb';   // 파랑
             }
 
-            const contentNode = document.createElement('div');
-            contentNode.className = `${bgColor} text-white px-2.5 py-1.5 rounded-full shadow-md border-2 border-white text-xs font-bold flex items-center gap-1 cursor-pointer hover:scale-110 transition`;
-            contentNode.innerHTML = `<i class="fa-solid ${iconClass}"></i> <span class="max-w-[80px] truncate">${placeName}</span>`;
-            
-            return contentNode;
+            // SVG 코드를 데이터 URL(Data URI) 형태로 변환하여 핀 마커 이미지로 사용
+            const svgString = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="36" height="46">
+                    <!-- 핀 배경 방패 모양 -->
+                    <path fill="${pinColor}" d="M172.2 501.3C26.9 291 0 269.4 0 192 0 86 86 0 192 0s192 86 192 192c0 77.4-26.9 99-172.2 309.3-9.5 13.8-29.3 13.8-38.6 0z"/>
+                    <!-- 내부 아이콘 (FontAwesome 웹폰트 활용) -->
+                    <text x="50%" y="42%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="'Font Awesome 6 Free', 'FontAwesome'" font-weight="900" font-size="18">${decodeURIComponent(iconUnicode)}</text>
+                </svg>
+            `;
+
+            const imageSrc = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+            const imageSize = new kakao.maps.Size(36, 46); // 마커 이미지 크기
+            const imageOption = { offset: new kakao.maps.Point(18, 46) }; // 핀의 뾰족한 부분이 좌표 딱 맞게 설정
+
+            return new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
         }
 
-        // 지도에 커스텀 마커를 표시하는 함수 (CustomOverlay 사용)
+        // 지도에 진짜 '마커(핀)'를 생성하고 표시하는 함수
         function displayPlacesOnMap(places, category) {
-            clearAllMarkers();
+            clearAllMarkers(); // 기존 마커 초기화
 
             const boundsRange = new kakao.maps.LatLngBounds();
 
@@ -239,45 +248,46 @@
                 const placeItem = places[i];
                 const placeCoords = new kakao.maps.LatLng(placeItem.y, placeItem.x);
 
-                // 커스텀 오버레이로 마커 생성 (아이콘 + 장소 이름이 마커에 직접 표시됨)
-                const customOverlayNode = createCustomMarker(category, placeItem.place_name);
+                // 카테고리별 맞춤형 핀 이미지 생성
+                const markerImage = createMarkerImage(category);
 
-                const customOverlay = new kakao.maps.CustomOverlay({
+                // 카카오 기본 마커 객체 생성 (image 옵션 적용)
+                const marker = new kakao.maps.Marker({
+                    map: mapInstance,
                     position: placeCoords,
-                    content: customOverlayNode,
-                    yAnchor: 1.3
+                    image: markerImage
                 });
 
-                customOverlay.setMap(mapInstance);
-                markersList.push(customOverlay); // 관리 배열에 추가
+                markersList.push(marker);
                 boundsRange.extend(placeCoords);
 
-                // 마커 클릭 시 상세 인포윈도우 팝업
+                // 마커 클릭 시 나타날 정보 창(인포윈도우)
                 const infowindow = new kakao.maps.InfoWindow({
-                    content: `<div style="padding:8px;font-size:12px;font-weight:bold;width:150px;">
+                    content: `<div style="padding:8px;font-size:12px;font-weight:bold;width:160px;">
                                 <div style="color:#4f46e5; margin-bottom:2px;">${placeItem.place_name}</div>
                                 <div style="font-size:11px; font-weight:normal; color:#666;">${placeItem.road_address_name || placeItem.address_name}</div>
                               </div>`
                 });
 
-                // 마커 엘리먼트에 직접 클릭 이벤트 연결
-                customOverlayNode.addEventListener('click', function() {
+                // 마커 클릭 이벤트 리스너 연결
+                kakao.maps.event.addListener(marker, 'click', function() {
                     if (currentInfowindow) {
                         currentInfowindow.close();
                     }
-                    infowindow.open(mapInstance, new kakao.maps.Marker({position: placeCoords})); // 위치 기준 인포윈도우 연동
+                    infowindow.open(mapInstance, marker);
                     currentInfowindow = infowindow;
 
-                    // 지도 중심 이동
+                    // 클릭한 곳으로 지도 중심 이동 및 확대
                     mapInstance.setCenter(placeCoords);
                     mapInstance.setLevel(3);
                 });
             }
 
+            // 마커들이 모두 보이도록 지도 범위 조정
             mapInstance.setBounds(boundsRange);
         }
 
-        // 모든 마커(오버레이)를 지도에서 제거하는 함수
+        // 지도 위 모든 마커 제거 함수
         function clearAllMarkers() {
             for (let i = 0; i < markersList.length; i++) {
                 markersList[i].setMap(null);
@@ -285,7 +295,7 @@
             markersList = [];
         }
 
-        // 왼쪽 패널 리스트 렌더링 함수
+        // 왼쪽 패널 리스트 렌더링
         function displayPlacesList(places) {
             const listContainerNode = document.getElementById('placeListContainer');
             listContainerNode.innerHTML = '';
@@ -294,7 +304,7 @@
                 const placeItem = places[i];
                 
                 const listItemCard = document.createElement('div');
-                listItemCard.className = 'p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-300 transition cursor-pointer shadow-sm';
+                listItemCard.className = 'p-3 bg-gray-100 border border-gray-200 rounded-lg hover:bg-indigo-50 hover:border-indigo-300 transition cursor-pointer shadow-sm';
                 
                 listItemCard.innerHTML = `
                     <h3 class="font-bold text-gray-800 text-sm mb-1">${placeItem.place_name}</h3>
@@ -302,6 +312,7 @@
                     <p class="text-xs text-indigo-600 font-medium">${placeItem.phone || '전화번호 없음'}</p>
                 `;
 
+                // 리스트 클릭 시 해당 마커 위치로 이동
                 listItemCard.addEventListener('click', function() {
                     const moveCoords = new kakao.maps.LatLng(placeItem.y, placeItem.x);
                     mapInstance.setCenter(moveCoords);
